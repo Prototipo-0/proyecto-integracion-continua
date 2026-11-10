@@ -3,31 +3,69 @@
 
 ## Descripción
 
-Aplicación web desarrollada con Python y Flask, conectada a una base de datos PostgreSQL. Los servicios se ejecutan mediante contenedores Docker y se administran con Docker Compose.
+Aplicación web desarrollada con Python y Flask para la gestión de incidencias de soporte tecnológico. Está conectada a una base de datos PostgreSQL y utiliza contenedores Docker para ejecutar y administrar sus servicios mediante Docker Compose.
 
 ## Tecnologías utilizadas
-
 - Python 3.12
 - Flask
 - PostgreSQL 16
 - Docker
 - Docker Compose
-- Git
+- Git y GitHub
+- GitHub Actions
 
 ## Estructura del proyecto
 
 \`\`\`text
+Aplicación web desarrollada con Python y Flask para la gestión de incidencias de soporte tecnológico. Está conectada a una base de datos PostgreSQL y utiliza contenedores Docker para ejecutar y administrar sus servicios mediante Docker Compose.
+
+Tecnologías utilizadas
+
+Python 3.12
+
+Flask
+
+PostgreSQL 16
+
+Docker
+
+Docker Compose
+
+Git y GitHub
+
+GitHub Actions
+
+Estructura del proyecto
+
 proyecto-integracion-continua/
 │
+├── .github/
+│   └── workflows/
+│       └── docker-build.yml
+│
 ├── app/
+│   ├── auth/
+│   ├── dashboard/
+│   ├── incidents/
+│   ├── users/
+│   ├── categories/
+│   ├── services/
+│   ├── templates/
+│   ├── static/
+│   ├── __init__.py
 │   ├── app.py
+│   ├── config.py
+│   ├── extensions.py
 │   ├── Dockerfile
 │   └── requirements.txt
 │
 ├── database/
-│   └── init.sql
+│   ├── init.sql
+│   ├── schema.sql
+│   └── seed.sql
 │
-├── .env
+├── .dockerignore
+├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
@@ -39,7 +77,31 @@ proyecto-integracion-continua/
 - Docker Compose
 - Git
 
+## Configuración inicial
+
+Clonar el repositorio: 
+
+\`\`\`bash
+git clone https://github.com/Prototipo-0/proyecto-integracion-continua.git
+\`\`\`
+
+Ingresar a la carpeta: 
+
+\`\`\`bash
+cd proyecto-integracion-continua
+\`\`\`
+
+Crear el archivo local de variables de entorno a partir de la plantilla: 
+
+\`\`\`bash
+Copy-Item .env.example .env
+\`\`\`
+
+Editar el archivo .env con los valores correspondientes al entorno local.
+
 ## Ejecución del proyecto
+
+Construir las imágenes e iniciar los servicios:
 
 Construir e iniciar los servicios:
 
@@ -53,31 +115,42 @@ Consultar el estado de los contenedores:
 docker compose ps
 \`\`\`
 
+Consultar los registros de ejecución:
+
+\`\`\`bash
+docker compose logs
+\`\`\`
+
 Detener los servicios:
 
 \`\`\`bash
 docker compose down
 \`\`\`
 
-## Endpoints
+## Acceso a la aplicación
 
-| Ruta | Descripción |
-|---|---|
-| / | Verifica el funcionamiento de Flask |
-| /health | Verifica la conexión con PostgreSQL |
+La aplicación web Flask está disponible en: http://localhost:5000
 
-## Puertos
+La base de datos PostgreSQL utiliza el puerto 5432 y se comunica con Flask mediante el nombre del servicio db dentro de la red Docker red_proyecto.
 
-- Flask: 5000
-- PostgreSQL: 5432
+## Persistencia de datos
 
-## Base de datos
+PostgreSQL utiliza un volumen Docker denominado postgres_data, que permite conservar la información almacenada cuando los contenedores se detienen o se recrean.
 
-PostgreSQL utiliza un volumen persistente denominado postgres_data.
+## Red Docker
 
-La inicialización de la base de datos se realiza mediante el archivo database/init.sql.
+Los servicios app y db se encuentran conectados a una red personalizada denominada red_proyecto, configurada mediante el controlador bridge.
+
+## Integración continua
+
+El proyecto utiliza GitHub Actions para automatizar la construcción de la imagen Docker de la aplicación cuando se realizan cambios mediante eventos push o pull_request.
+
+El flujo de trabajo se encuentra en:
+
+.github/workflows/docker-build.yml
 
 ## Seguridad
 
-Las variables de entorno y credenciales se almacenan en el archivo .env, excluido del repositorio mediante .gitignore.
-"@ | Set-Content README.md
+Las credenciales y variables de entorno locales se almacenan en .env, archivo excluido del repositorio mediante .gitignore.
+
+El archivo .env.example proporciona una plantilla de configuración sin incluir las credenciales reales. También se utiliza .dockerignore para excluir archivos innecesarios durante la construcción de la imagen Docker.
