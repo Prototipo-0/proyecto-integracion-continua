@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgres:16-alpine
@@ -17,6 +18,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - red_proyecto
 
   app:
     build: ./app
@@ -29,6 +32,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - red_proyecto
 
 volumes:
   postgres_data:
+
+networks:
+  red_proyecto:
+    driver: bridge
