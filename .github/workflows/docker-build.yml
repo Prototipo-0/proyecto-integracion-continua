@@ -1,0 +1,25 @@
+
+name: Docker Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build Flask Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir imagen de Flask
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: false
+          tags: proyecto-integracion-continua-app:latest
