@@ -18,7 +18,28 @@ pipeline {
                 sh '''
                     test -f app/Dockerfile
                     test -f app/requirements.txt
+                    test -f app/tests/conftest.py
                     echo "Estructura del proyecto validada"
+                '''
+            }
+        }
+
+        stage('Construir imagen de pruebas') {
+            steps {
+                sh '''
+                    docker build \
+                        -t proyecto-integracion-continua-test:${BUILD_NUMBER} \
+                        ./app
+                '''
+            }
+        }
+
+        stage('Ejecutar pruebas automatizadas') {
+            steps {
+                sh '''
+                    docker run --rm \
+                        proyecto-integracion-continua-test:${BUILD_NUMBER} \
+                        pytest /app/tests -v
                 '''
             }
         }
@@ -36,7 +57,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline ejecutado correctamente.'
+            echo 'Pipeline ejecutado correctamente. Todas las pruebas fueron aprobadas.'
         }
         failure {
             echo 'El Pipeline presentó un error.'

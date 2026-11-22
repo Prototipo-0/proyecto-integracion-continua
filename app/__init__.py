@@ -26,4 +26,11 @@ def create_app():
         url_prefix="/users"
     )
 
+    if app.config["ENABLE_DIAGNOSTIC_ENDPOINT"]:
+        from app.tests import tests_bp
+        app.register_blueprint(
+            tests_bp,
+            url_prefix="/api"
+        )
+
     return app

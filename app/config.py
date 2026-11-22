@@ -12,3 +12,7 @@ class Config:
     DB_USER = os.getenv("DB_USER", "admin")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "admin123")
     DB_PORT = os.getenv("DB_PORT", "5432")
+
+    ENABLE_DIAGNOSTIC_ENDPOINT = (
+    os.getenv("ENABLE_DIAGNOSTIC_ENDPOINT", "false").lower() == "true"
+    )
